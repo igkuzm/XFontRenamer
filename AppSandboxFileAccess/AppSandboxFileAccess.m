@@ -2,7 +2,7 @@
  * File              : AppSandboxFileAccess.m
  * Author            : Igor V. Sementsov <ig.kuzm@gmail.com>
  * Date              : 16.05.2022
- * Last Modified Date: 16.05.2022
+ * Last Modified Date: 17.05.2022
  * Last Modified By  : Igor V. Sementsov <ig.kuzm@gmail.com>
  */
 //
@@ -66,7 +66,8 @@
 		}
 		
 		self.title = NSLocalizedString(@"Allow Access", @"Sandbox Access panel title.");
-		NSString *formatString = NSLocalizedString(@"%@ needs to access this path to continue. Click Allow to continue.", @"Sandbox Access panel message.");
+		//NSString *formatString = NSLocalizedString(@"%@ needs to access this path to continue. Click Allow to continue.", @"Sandbox Access panel message.");
+		NSString *formatString = @"XFontRenamer needs to access this path to continue. Click Allow to continue.";
 		self.message = [NSString stringWithFormat:formatString, applicationName];
 		self.prompt = NSLocalizedString(@"Allow", @"Sandbox Access panel prompt.");
 		
