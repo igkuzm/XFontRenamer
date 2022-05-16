@@ -6,22 +6,22 @@
 
 PROJECT_NAME=XFontRenamer
 
-all: builddebug
+all: buildDebug
 	open build/Debug/$(PROJECT_NAME).app/Contents/MacOS/$(PROJECT_NAME)
 
-builddebug:
+buildDebug:
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk									
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj 
 
-buildrelease: 
+buildRelease: 
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_BUILD_TYPE=Release\
 		-DCMAKECFLAGS=-fembed-bitcode -DCMAKECXX_FLAGS=-fembed-bitcode\
 		-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk									
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj -configuration Release 
 
-archive: buildrelease 
+archive: buildRelease 
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj -configuration Release archive -sdk macosx -archivePath build/$(PROJECT_NAME).xcarchive 
 	open build/$(PROJECT_NAME).xcarchive
 
