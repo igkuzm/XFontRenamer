@@ -17,6 +17,7 @@
 		self.autoresizingMask = NSViewWidthSizable|NSViewHeightSizable;
 		[self registerForDraggedTypes:@[NSPasteboardTypeFileURL]];
 		self.draggingCanceled = false;
+		self.renameDone = false;
 	}
 	return self;
 }
@@ -83,11 +84,12 @@
 	NSLog(@"Dragging ended: %@", self.draggingCanceled?@"Canceled":@"Accepted");
 	if (!self.draggingCanceled){
 		[self handleWithPasteboard:sender.draggingPasteboard];
-		[self showDone];
+		if (self.renameDone) [self showDone];
 	}	
 }
 
 -(void)handleWithPasteboard:(NSPasteboard *)pasteBoard{
+	self.renameDone = false;
 	for (NSPasteboardItem *item in pasteBoard.pasteboardItems) {
 		NSData *data = [item dataForType:@"public.file-url"]; 
 		NSURL *url = [NSURL URLWithString:[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding]];
@@ -160,6 +162,7 @@
 				NSLog(@"ERROR: %@", error);
 			} else {
 				NSLog(@"Renamed font %@ to %@", url.path, newPath);
+				self.renameDone = true;
 			}
 		}];
 	}	

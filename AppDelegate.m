@@ -2,7 +2,7 @@
  * File              : AppDelegate.m
  * Author            : Igor V. Sementsov <ig.kuzm@gmail.com>
  * Date              : 14.05.2022
- * Last Modified Date: 16.05.2022
+ * Last Modified Date: 17.05.2022
  * Last Modified By  : Igor V. Sementsov <ig.kuzm@gmail.com>
  */
 
@@ -39,6 +39,7 @@
 
 	NSURL *url = [NSURL fileURLWithPath:filename];
 	MainView *mainView = self.view;
+	mainView.renameDone = false;
 
 	[mainView handleWithURL:url];
 	[mainView showDone];
