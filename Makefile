@@ -6,26 +6,29 @@
 
 PROJECT_NAME=XFontRenamer
 
-all: buildDebug
+all: build/Debug
 	open build/Debug/$(PROJECT_NAME).app/Contents/MacOS/$(PROJECT_NAME)
 
-buildDebug:
+build/Debug: *.m *.h
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk									
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj 
 
-buildRelease: 
+build/Release: *.m *.h 
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_BUILD_TYPE=Release\
 		-DCMAKECFLAGS=-fembed-bitcode -DCMAKECXX_FLAGS=-fembed-bitcode\
 		-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk									
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj -configuration Release 
 
-archive: buildRelease 
+archive: build/Release 
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj -configuration Release archive -sdk macosx -archivePath build/$(PROJECT_NAME).xcarchive 
 	open build/$(PROJECT_NAME).xcarchive
+
+dmg: build/Release
+	hdiutil create build/$(PROJECT_NAME).dmg -volname "$(PROJECT_NAME)" -fs HFS+ -srcfolder "build/Release"
 
 clean:
 	rm -fr build
 
-.Phony: clean builddebug buildrelease archive all
+.Phony: clean archive dmg all
