@@ -2,12 +2,13 @@
  * File              : MainView.m
  * Author            : Igor V. Sementsov <ig.kuzm@gmail.com>
  * Date              : 14.05.2022
- * Last Modified Date: 15.05.2022
+ * Last Modified Date: 16.05.2022
  * Last Modified By  : Igor V. Sementsov <ig.kuzm@gmail.com>
  */
 
 #import "MainView.h"
-#include "FontRenamer.h"
+#import "FontRenamer.h"
+#import "AppSandboxFileAccess/AppSandboxFileAccess.h"
 
 @implementation MainView
 - (id)initWithFrame:(NSRect)frame
@@ -41,9 +42,12 @@
 		BOOL isDir;
 		BOOL exists = [[NSFileManager defaultManager]fileExistsAtPath:url.path isDirectory:&isDir];
 		if (isDir){
-			//find font
+			//find font - don't look more then 10 files - to increese program speed
+			__block int files = 0;
 			NSArray *dirent = [[NSFileManager defaultManager]contentsOfDirectoryAtPath:url.path error:NULL];
 			[dirent enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop){
+				files++;
+				if (files > 10) *stop = true; //stop block if files > 10
 				//check if file
 				NSString *filename = (NSString *)obj;
 				NSString *path = [url.path stringByAppendingPathComponent:filename];
@@ -94,18 +98,41 @@
 }
 
 -(void)handleWithURL:(NSURL *)url{
-	//check if url is directory
-	BOOL isDir;
-	BOOL exists = [[NSFileManager defaultManager]fileExistsAtPath:url.path isDirectory:&isDir];
-	if (exists && isDir){
-		//handle with directory
-		[self handleWithDirectory:url];
+	//checkAccess
+	// initialise the file access class
+	AppSandboxFileAccess *fileAccess = [AppSandboxFileAccess fileAccess];
 
-	} else {
-		if (exists) {
-			//handle with file
-			[self handleWithFile:url];
+	// persist permission to access the file the user introduced to the app, so we can always 
+	// access it and then the AppSandboxFileAccess class won't prompt for it if you wrap access to it
+	[fileAccess persistPermissionPath:url.path];
+
+	// get the parent directory for the file
+	NSString *parentDirectory = [url.path stringByDeletingLastPathComponent];
+					
+	// get access to the parent directory
+	//[fileAccess accessFilePath:(NSString *) withBlock:^(void)block persistPermission:(BOOL)]
+	BOOL accessAllowed = [fileAccess accessFilePath:parentDirectory persistPermission:YES withBlock:^{
+
+	  // write or read files in that directory
+	  // e.g. write AwesomeRecipe.txt.gz to the same directory as the txt file
+	  
+		//check if url is directory
+		BOOL isDir;
+		BOOL exists = [[NSFileManager defaultManager]fileExistsAtPath:url.path isDirectory:&isDir];
+		if (exists && isDir){
+			//handle with directory
+			[self handleWithDirectory:url];
+
+		} else {
+			if (exists) {
+				//handle with file
+				[self handleWithFile:url];
+			}
 		}
+	}];
+
+	if (!accessAllowed) {
+	  NSLog(@"Sad Wookie");
 	}
 }
 

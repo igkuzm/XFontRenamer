@@ -1,7 +1,7 @@
 # File              : Makefile
 # Author            : Igor V. Sementsov <ig.kuzm@gmail.com>
 # Date              : 25.08.2021
-# Last Modified Date: 16.05.2022
+# Last Modified Date: 17.05.2022
 # Last Modified By  : Igor V. Sementsov <ig.kuzm@gmail.com>
 
 PROJECT_NAME=XFontRenamer
@@ -9,12 +9,12 @@ PROJECT_NAME=XFontRenamer
 all: build/Debug
 	open build/Debug/$(PROJECT_NAME).app/Contents/MacOS/$(PROJECT_NAME)
 
-build/Debug: *.m *.h
+build/Debug: *.m *.h *.plist *.entitlements
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk									
 	xcodebuild -scheme $(PROJECT_NAME) -project build/$(PROJECT_NAME).xcodeproj 
 
-build/Release: *.m *.h 
+build/Release: *.m *.h *.plist *.entitlements
 	mkdir -p build && cd build && cmake .. -GXcode\
 		-DCMAKE_BUILD_TYPE=Release\
 		-DCMAKECFLAGS=-fembed-bitcode -DCMAKECXX_FLAGS=-fembed-bitcode\

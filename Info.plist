@@ -24,6 +24,8 @@
 	<string>1.0</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright Igor Sementsov</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>	
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -42,6 +44,8 @@
 			<array>
 				<string>public.folder</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Folder</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 		</dict>		

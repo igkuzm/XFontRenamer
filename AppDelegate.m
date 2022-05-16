@@ -2,7 +2,7 @@
  * File              : AppDelegate.m
  * Author            : Igor V. Sementsov <ig.kuzm@gmail.com>
  * Date              : 14.05.2022
- * Last Modified Date: 15.05.2022
+ * Last Modified Date: 16.05.2022
  * Last Modified By  : Igor V. Sementsov <ig.kuzm@gmail.com>
  */
 
@@ -20,6 +20,9 @@
 	MainView *mainView = [[MainView alloc]initWithFrame:self.window.frame];
 	self.view = mainView;
 	[self.window setContentView:mainView];
+
+	//set main menu
+	[self setupMainMenu];
 
 	[self.window makeKeyAndOrderFront:NULL];
 
@@ -41,6 +44,43 @@
 	[mainView showDone];
 
     return YES;
+}
+
+-(void)setupMainMenu{
+	NSMenu *mainMenu = [[NSMenu alloc]init];
+	[NSApp setMainMenu:mainMenu];
+
+	NSMenuItem *appMenuItem = [[NSMenuItem alloc]init];
+	appMenuItem.title = @"XFontRenamer";
+	[mainMenu addItem:appMenuItem];
+	
+	NSMenu *appMenu = [[NSMenu alloc]init];
+	[appMenuItem setSubmenu:appMenu];
+
+	NSMenuItem *about = [[NSMenuItem alloc]init];
+	about.title = @"About XFontRenamer";
+	about.enabled = true;
+	about.target = self;
+	about.action = @selector(about:);	
+	[appMenu addItem:about];
+
+	[appMenu addItem:[NSMenuItem separatorItem]];
+
+	NSMenuItem *quit = [[NSMenuItem alloc]init];
+	quit.title = @"Quit XFontRenamer";
+	quit.enabled = true;
+	quit.target = self;
+	quit.action = @selector(quit:);
+	[appMenu addItem:quit];	
+
+}
+
+-(void)quit:(id)sender{
+	[NSApp terminate:sender];
+}
+
+-(void)about:(id)sender{
+	[NSApp orderFrontStandardAboutPanel:NULL];
 }
 
 @end

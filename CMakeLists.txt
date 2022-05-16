@@ -16,8 +16,10 @@ LIST(APPEND RESOURCE_FILES
 )
 
 file(GLOB TARGET_SOURCES "*.m")
+file(GLOB SANDBOX_FILEACCESS "AppSandboxFileAccess/*.m")
 add_executable(${TARGET} 
 	${TARGET_SOURCES}
+	${SANDBOX_FILEACCESS}
 	${RESOURCE_FILES}
 )
 
@@ -29,6 +31,9 @@ target_link_libraries(${TARGET}
 target_sources(${TARGET} PRIVATE AppIcons/Assets.xcassets)
 set_source_files_properties(AppIcons/Assets.xcassets PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 set_target_properties(${TARGET} PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon")
+
+#add entitiments
+set_target_properties(${TARGET} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "${CMAKE_SOURCE_DIR}/${TARGET}.entitlements")
 
 set_target_properties(${TARGET} PROPERTIES
 	
